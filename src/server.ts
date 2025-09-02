@@ -3,6 +3,8 @@
     StdioServerTransport 
     } from "@modelcontextprotocol/sdk/server/stdio.js";
     import { writeFile } from "fs/promises";
+import { url } from "inspector";
+import { text } from "stream/consumers";
 
     import {z} from 'zod'
     const server = new McpServer({
@@ -14,6 +16,18 @@
         tools: {},
         }
     });
+
+server.resource(
+    "users",
+    "users://all",
+    async (uri:any) => {
+        // fetch all from db
+        const users = await import("./data/users.json", {
+            with: { type: "json" },
+        }).then(m=>m.default)
+        return { contents: [{ uri: uri.href, text: JSON.stringify(users), MimeType: "application/json" }] }
+    }
+)
 
     server.tool("create-user","create a new use in database",{
         name:z.string(),
