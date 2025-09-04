@@ -6,6 +6,12 @@
 import { url } from "inspector";
 import { text } from "stream/consumers";
 
+interface userInterface { 
+    name: string; 
+    email: string; 
+    phone: string; 
+    address: string; 
+}
     import {z} from 'zod'
     const server = new McpServer({
         name: "test-server",
@@ -39,7 +45,7 @@ server.resource(
         readOnlyHint:false,
         idempotentHint:false,
         openWorldHint:true,
-    },async (params)=>{
+    },async (params:userInterface)=>{
         try {
             const id = await createUser(params);
             return {
@@ -58,7 +64,6 @@ server.resource(
                 ]
             }
         }
-        return {}
     }) 
 
     async function createUser(user:{
